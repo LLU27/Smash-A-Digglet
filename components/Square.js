@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text, TouchableOpacity,Image} from "react-native";
+import { View, StyleSheet, TouchableOpacity,Image} from "react-native";
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addScore } from "../redux/scoreReducer";
@@ -10,18 +10,19 @@ const Square = () => {
   const randomTime = Math.random() * 20000;
   let timerId;
   const score = useSelector((state) => state);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
     timerId = setInterval(() => {
       setMoleActive(true);
-      //after some time pass, set time to make mole false, so it does not display the mole
+      //after .8 second setMole to false
       setTimeout(() => {
         setMoleActive(false);
       }, 1000);
     }, randomTime);
     //callback endGame function after 60sec
-    setTimeout(endGame, 30 * 1000);
+    setTimeout(endGame, 10 * 1000);
   }, []);
 
   function endGame() {
@@ -38,7 +39,7 @@ const Square = () => {
       <Image source={moleActive ? require("../assets/diglet.png"):require("../assets/hole.png")}
        style={moleActive ? styles.mole : styles.square}>
       </Image>
-    </TouchableOpacity>
+      </TouchableOpacity>
   );
 };
 
@@ -61,21 +62,8 @@ const styles = StyleSheet.create({
     width:'100%',
     marginTop:70,
   },
-  x:{
-    fontWeight:'bold',
-    fontSize:65,
-    textAlign:'center'
-  }
+
 });
 
-// const mapStateToProps = (state) => {
-//   return {
-//     score: state.score,
-//   };
-// };
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     addScore: () => dispatch(addScore),
-//   };
-// };
+
 export default Square;
