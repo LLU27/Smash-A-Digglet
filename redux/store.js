@@ -1,6 +1,6 @@
-import scoreReducer from './scoreReducer'
+import reducer from "./index"
 import { createStore} from 'redux'
 
-const store = createStore(scoreReducer);
+const store = createStore(reducer);
 
 export default store;

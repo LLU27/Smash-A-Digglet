@@ -10,31 +10,41 @@ import Square from "./Square";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { clearScore } from "../redux/scoreReducer";
+import HomeScreen from "./HomeScreen";
+
+
 
 const GameBoard = () => {
-  const [timeLeft, setTimeLeft] = useState(10);
-  const score = useSelector((state) => state);
-  const [isGameOver, setGameOver] = useState(false);
-  const dispatch = useDispatch()
+  const [timeLeft, setTimeLeft] = useState(15);
+  const [isGameOver, setGameOver] = useState();
+  const score = useSelector((state) => state.scoreReducer.score);
+  const status =useSelector((state)=>state.gameStatusReducer.status)
+  const dispatch = useDispatch();
+
+
+console.log('status,',status)
 
   useEffect(() => {
     if (!timeLeft) {
       return setGameOver(true);
     } else {
-      const timerId = setInterval(() => {
-        setTimeLeft(timeLeft - 1);
-      }, 1000);
-      return () => clearInterval(timerId);
+      //need logic to make it start when app starts
+        if(status){
+          const timerId = setInterval(() => {
+            setTimeLeft(timeLeft - 1);
+          }, 1000);
+          return () => clearInterval(timerId);
+        }
     }
-  }, [timeLeft]);
+  }, [timeLeft,status]);
 
   function restartGame() {
     setGameOver(false);
-    setTimeLeft(10);
-    dispatch(clearScore())
+    setTimeLeft(15);
+    dispatch(clearScore());
   }
 
-  return !isGameOver ? (
+  return !status ? <HomeScreen /> :!isGameOver ? (
     <ImageBackground
       style={styles.container}
       source={require("../assets/Grass_Type.png")}
@@ -46,7 +56,7 @@ const GameBoard = () => {
         ></Image>
       </View>
       <Text style={styles.time}>Time Remaining : {timeLeft} seconds</Text>
-      <Text style={styles.score}>Your Smashed : {score.score} Moles!</Text>
+      <Text style={styles.score}>Your Smashed : {score} Moles!</Text>
       <View style={styles.game}>
         <Square></Square>
         <Square></Square>
@@ -65,7 +75,7 @@ const GameBoard = () => {
   ) : (
     <View style={styles.gameOverContainer}>
       <Image source={require("../assets/gameover.png")}></Image>
-      <Text style={styles.finalScore}>You Smashed {score.score} Moles!</Text>
+      <Text style={styles.finalScore}>You Smashed {score} Moles!</Text>
       <TouchableOpacity style={styles.restartBtn} onPress={restartGame}>
         <Image source={require("../assets/playagain.png")}></Image>
       </TouchableOpacity>

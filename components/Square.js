@@ -1,7 +1,8 @@
-import { View, StyleSheet, TouchableOpacity,Image} from "react-native";
+import { View, StyleSheet, TouchableOpacity,Image, TouchableHighlight} from "react-native";
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addScore } from "../redux/scoreReducer";
+import {Audio} from 'expo-av'
 
 
 const Square = () => {
@@ -10,8 +11,19 @@ const Square = () => {
   const randomTime = Math.random() * 20000;
   let timerId;
   const score = useSelector((state) => state);
+  const dispatch = useDispatch(); 
+  const hitSound = require("../assets/hit.mp3")
 
-  const dispatch = useDispatch();
+  
+  async function playHitSound(){
+    try{
+      const{sound:soundObject,status} = await Audio.Sound.createAsync(hitSound,{shouldPlay:true,isLooping:false});
+      await soundObject.playAsync()
+    }catch(err){
+      console.log(err)
+    }
+    }
+
 
   useEffect(() => {
     timerId = setInterval(() => {
@@ -22,7 +34,7 @@ const Square = () => {
       }, 1000);
     }, randomTime);
     //callback endGame function after 60sec
-    setTimeout(endGame, 10 * 1000);
+    setTimeout(endGame, 10 * 1500);
   }, []);
 
   function endGame() {
@@ -31,10 +43,13 @@ const Square = () => {
   }
 
   const onPress = () => {
+    playHitSound()
     dispatch(addScore())
   }
 
+
   return (
+  
     <TouchableOpacity onPress={moleActive ? onPress : null}>
       <Image source={moleActive ? require("../assets/diglet.png"):require("../assets/hole.png")}
        style={moleActive ? styles.mole : styles.square}>

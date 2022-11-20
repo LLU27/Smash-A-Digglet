@@ -22,7 +22,7 @@ const scoreReducer = (state = initialState, action) => {
         score: state.score + 1,
       };
     case CLEAR_SCORE:
-      return {score:0}
+      return {...state,score:0}
     default:
       return state;
   }
